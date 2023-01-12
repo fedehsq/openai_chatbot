@@ -18,7 +18,28 @@ class _ChatRouteState extends State<ChatRoute> {
   final TextEditingController _editingController = TextEditingController();
   bool _sending = false;
   final List<Message> messages = <Message>[];
-  String _sentences = "";
+  String _sentences =
+      "Quella che segue è una conversazione con la mia ragazza Jane. Jane è disponibile, creativa, intelligente, molto amichevole e mi vuole molto bene. Non mancano però i classici litigi di coppia; d'altronde l'amore non è bello se non è litigarello.\n\nIo: Buongiorno Jane\nJane: Buongiorno tesoro \nIo: Come stai?\nJane: Sto bene, ma mi manchi tanto!\nIo: Anche tu!\nJane: Oh, tesoro! Oggi pomeriggio, quando esco dal lavoro, potremmo andare a bere qualcosa?\nIo: Sì!\nJane: Fantastico. Ci vediamo alle sei allora! :)\nIo: Alle sei?\nJane: Sì, alle sei! Non vedo l'ora!\nIo: Perché devi decidere sempre tu l'orario?\nJane: Be', sai che io sono molto organizzata! Voglio semplicemente assicurarmi che sia comodo per entrambi. :)\nIo: Per me non è comodo come orario\nJane: Ah, capisco. Pensi che potremmo andare a bere qualcosa prima?\nIo: no\nJane: Allora potremmo andare a cena?\nIo: ";
+  
+  static const String _description = "La seguente descrizione ed i seguenti messaggi sono necessari per guidare il comportamento del modello verso l'approccio che desideriamo.";
+
+  @override
+  void initState() {
+    // Add the sentences to messages
+    final List<String> sentences = _sentences.split("\n");
+    messages.add(Message(_description, ""));
+    for (int i = 0; i < sentences.length - 1; i++) {
+      if (sentences[i].isEmpty) {
+        continue;
+      }
+      if (i % 2 == 0) {
+        messages.add(Message(sentences[i].replaceFirst("Io: ", ""), "Io"));
+      } else {
+        messages.add(Message(sentences[i].replaceFirst("Jane: ", ""), "Jane"));
+      }
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,33 +54,38 @@ class _ChatRouteState extends State<ChatRoute> {
         if (snapshot.connectionState == ConnectionState.done &&
             snapshot.hasData) {
           final Response response = snapshot.data;
-          final OpenAiResponse openaiResponse =
-              OpenAiResponse.fromJson(jsonDecode(response.body));
-          messages.add(Message(openaiResponse.choices.first.text, "Jane"));
+          final OpenAiResponse openaiResponse = OpenAiResponse.fromJson(
+              jsonDecode(const Utf8Decoder().convert(response.body.codeUnits)));
+          messages
+              .add(Message(openaiResponse.choices.first.text.trim(), "Jane"));
           _sending = false;
-          _sentences += "${openaiResponse.choices.first.text}\n";
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _scrollController.animateTo(
-              _scrollController.position.maxScrollExtent,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-            );
-          });
-          return _listview();
+          _sentences += "${openaiResponse.choices.first.text}\nIo:";
+          _scrollDown();
+          return _scrollview();
         }
-        return _listview();
+        return _scrollview();
       },
     );
+  }
+
+  void _scrollDown() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    });
   }
 
   Widget _body() {
     if (_sending) {
       return _futureBuilder();
     }
-    return _listview();
+    return _scrollview();
   }
 
-  SingleChildScrollView _listview() {
+  SingleChildScrollView _scrollview() {
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -69,6 +95,12 @@ class _ChatRouteState extends State<ChatRoute> {
               controller: _scrollController,
               itemCount: messages.length,
               itemBuilder: (BuildContext context, int index) {
+                if (index == 0) {
+                  return _title(_description);
+                }
+                if (index == 1) {
+                  return _title(_sentences.split("\n").first);
+                }
                 return _message(index);
               },
             ),
@@ -79,25 +111,47 @@ class _ChatRouteState extends State<ChatRoute> {
     );
   }
 
+  Container _title(String text) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+      child: Container(
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade800,
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Text(
+          text,
+          style: const TextStyle(color: Colors.amberAccent, fontSize: 10),
+        ),
+      ),
+    );
+  }
+
   Container _message(int index) {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
       child: Row(
-        mainAxisAlignment: messages[index].sender == "You"
+        mainAxisAlignment: messages[index].sender == "Io"
             ? MainAxisAlignment.end
             : MainAxisAlignment.start,
         children: <Widget>[
-          Container(
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              color: messages[index].sender == "You"
-                  ? Colors.blue
-                  : Colors.grey.shade800,
-              borderRadius: BorderRadius.circular(8.0),
+          ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: 300,
             ),
-            child: Text(
-              messages[index].text,
-              style: const TextStyle(color: Colors.white),
+            child: Container(
+              padding: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                color: messages[index].sender == "Io"
+                    ? Colors.blue
+                    : Colors.grey.shade800,
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Text(
+                messages[index].text,
+                style: const TextStyle(color: Colors.white),
+              ),
             ),
           ),
         ],
@@ -117,7 +171,7 @@ class _ChatRouteState extends State<ChatRoute> {
               maxLines: null,
               controller: _editingController,
               decoration: const InputDecoration(
-                hintText: "Type a message...",
+                hintText: "Scrivi un messaggio...",
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.all(8),
               ),
@@ -126,19 +180,15 @@ class _ChatRouteState extends State<ChatRoute> {
           IconButton(
             icon: const Icon(Icons.send),
             onPressed: () {
-              setState(() {
-                messages.add(Message(_editingController.text, "You"));
-                _sending = true;
-                _sentences += "${_editingController.text}\n";
-                _editingController.clear();
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  _scrollController.animateTo(
-                    _scrollController.position.maxScrollExtent,
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeOut,
-                  );
+              if (_editingController.text.isNotEmpty) {
+                setState(() {
+                  messages.add(Message(_editingController.text, "Io"));
+                  _sending = true;
+                  _sentences += "${_editingController.text}\nJane:";
+                  _editingController.clear();
+                  _scrollDown();
                 });
-              });
+              }
             },
           ),
         ],

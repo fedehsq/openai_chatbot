@@ -52,7 +52,7 @@ class Choice {
 
 class Usage {
   final int promptTokens;
-  final int completionTokens;
+  final int? completionTokens;
   final int totalTokens;
 
   Usage({
