@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       title: 'Chatbot',
       theme: ThemeData.dark(),
       themeMode: ThemeMode.dark,
-      home: const ChatRoute(),
+      home: const ChatRoute(peer: 'Jane', example: true,),
     );
   }
 

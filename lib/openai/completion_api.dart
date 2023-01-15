@@ -9,8 +9,10 @@ class CompletionApi {
 
   static Future<http.Response> _post(
       String url, Map<String, String> headers, String body) async {
-    return await http.post(Uri.parse(completionApiUrl),
+    final r = await http.post(Uri.parse(completionApiUrl),
         headers: headers, body: body);
+    print(r.body);
+    return r;
   }
 
   static Future<http.Response> sendMessage(String message) async {

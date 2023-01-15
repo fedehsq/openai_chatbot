@@ -1,6 +1,6 @@
 # openai_chatbot
 
 ## Description
-Flutter chat application to 
-This is a chatbot that uses OpenAI's GPT-3 API to generate responses to user input.
+Flutter chat application to interact with [OpenAI's GPT-3 API](https://beta.openai.com/docs/api-reference/introduction).
+You can find the API documentation [here].
 
