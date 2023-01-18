@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:openai_loving_chatbot/dto/message.dart';
+import 'package:openai_loving_chatbot/dto/message_dto.dart';
 import 'package:openai_loving_chatbot/widgets/message_box.dart';
 
 import 'send_text_field.dart';
 
 class ChatBody extends StatelessWidget {
   final ScrollController scrollController;
-  final List<Message> messages;
+  final List<MessageDto> messages;
   final TextEditingController editingController;
   final void Function() onPressed;
   const ChatBody(
