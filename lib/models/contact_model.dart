@@ -1,10 +1,10 @@
 class ContactModel {
-  final int id;
+  final int? id;
   final String name;
   final String photo;
   final bool trained;
 
-  ContactModel(this.id, this.name, this.photo, this.trained);
+  ContactModel(this.name, this.photo, this.trained, {this.id});
 
   Map<String, dynamic> toJson() {
     return {

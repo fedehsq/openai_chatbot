@@ -16,8 +16,7 @@ import '../openai/completion_api.dart';
 
 class Chat extends StatefulWidget {
   final ContactDto contact;
-  final String peer;
-  const Chat({super.key, required this.peer, required this.contact});
+  const Chat({super.key, required this.contact});
 
   @override
   State<Chat> createState() => _ChatState();
@@ -90,11 +89,10 @@ class _ChatState extends State<Chat> {
           _messages = snapshot.data;
           int startChatIndex = 0;
           if (widget.contact.trained) {
-            _sentences += _messages![1].text;
-            startChatIndex = 2;
+            _sentences += "${_messages!.first.text}\nIo:";
+            startChatIndex = 1;
           }
           for (int i = startChatIndex; i < _messages!.length; i++) {
-            //print("${_messages![i].sender}: ${_messages![i].text}");
             if (_messages![i].sender == "Io") {
               _sentences += "${_messages![i].text}$botStopword";
             } else {

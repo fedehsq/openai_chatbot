@@ -2,23 +2,20 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:openai_loving_chatbot/dao/contact_dao.dart';
-import 'package:openai_loving_chatbot/dao/message_dao.dart';
-import 'package:openai_loving_chatbot/dto/message_dto.dart';
 import 'package:openai_loving_chatbot/routes/chat.dart';
-import 'package:openai_loving_chatbot/routes/contacts.dart';
+import 'package:openai_loving_chatbot/routes/training.dart';
 
 import '../dto/contact_dto.dart';
 
-class Chats extends StatefulWidget {
-  const Chats({super.key});
+class Contacts extends StatefulWidget {
+  const Contacts({super.key});
 
   @override
-  State<Chats> createState() => _ChatsState();
+  State<Contacts> createState() => _ContactsState();
 }
 
-class _ChatsState extends State<Chats> {
+class _ContactsState extends State<Contacts> {
   List<ContactDto>? _contacts;
-  List<MessageDto>? _messages;
 
   FutureBuilder<List<Object>> _get(
       Future<List<Object>>? future, Function onSuccess) {
@@ -39,14 +36,8 @@ class _ChatsState extends State<Chats> {
   }
 
   Widget _getContacts() {
-    return _get(ContactDao.getAllWithAtLeastOneMessage(), (data) {
+    return _get(ContactDao.getAll(), (data) {
       _contacts = data as List<ContactDto>;
-    });
-  }
-
-  Widget _getLastMessages() {
-    return _get(MessageDao.getLastMessages(_contacts!), (data) {
-      _messages = data as List<MessageDto>;
     });
   }
 
@@ -62,22 +53,49 @@ class _ChatsState extends State<Chats> {
                 backgroundImage:
                     MemoryImage(base64Decode(_contacts![index].photo))),
             title: Text(_contacts![index].name),
-            // Empty subtitle id the last message is null
-            subtitle: _messages?[index].text != null
-                ? Text(_messages![index].text, maxLines: 3, overflow: TextOverflow.ellipsis)
-                : const Text(''),
-            onTap: () async {
-              await Navigator.push(
+            onTap: () {
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                     builder: (context) => Chat(contact: _contacts![index])),
               );
-              setState(() {
-                _contacts = null;
-                _messages = null;
-              });
             },
           ),
+        );
+      },
+    );
+  }
+
+  Future<String?> _botNameDialog() async {
+    final TextEditingController controller = TextEditingController();
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Bot name'),
+          content: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+                hintText: "Enter bot's name",
+                errorText:
+                    controller.text.isEmpty ? "Name can't be empty" : null),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Ok'),
+              onPressed: () {
+                if (controller.text.isNotEmpty) {
+                  Navigator.of(context).pop(controller.text);
+                }
+              },
+            ),
+          ],
         );
       },
     );
@@ -92,14 +110,17 @@ class _ChatsState extends State<Chats> {
         body: _body(),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            await Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const Contacts()),
-            );
-            setState(() {
-              _contacts = null;
-              _messages = null;
-            });
+            final String? botName = await _botNameDialog();
+            if (botName != null) {
+              WidgetsBinding.instance.addPostFrameCallback((_) async {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => BotTraining(
+                              botName: botName,
+                            )));
+              });
+            }
           },
           child: const Icon(Icons.add),
         ));
@@ -108,8 +129,6 @@ class _ChatsState extends State<Chats> {
   Widget _body() {
     if (_contacts == null) {
       return _getContacts();
-    } else if (_messages == null) {
-      return _getLastMessages();
     } else {
       return _contactsList();
     }

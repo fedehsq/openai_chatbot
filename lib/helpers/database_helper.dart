@@ -50,7 +50,6 @@ class DbHelper {
 
   static List<MessageModel> _defaultChat() {
     final List<MessageModel> messages = [];
-    messages.add(MessageModel(modelInfo, 1, false));
     messages.add(MessageModel(modelDescription, 1, true));
     List<String> chat = chatExample.split("\n");
     for (int i = 0; i < chat.length - 1; i++) {
@@ -71,9 +70,9 @@ class DbHelper {
     return _db!;
   }
 
-  static Future<void> insert(String table, Map<String, Object?> data) async {
+  static Future<int> insert(String table, Map<String, Object?> data) async {
     final Database db = await DbHelper._getDb;
-    await db.insert(table, data, conflictAlgorithm: ConflictAlgorithm.replace);
+    return await db.insert(table, data, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   static Future<List<Map<String, Object?>>> get(String table,
