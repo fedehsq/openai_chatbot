@@ -88,15 +88,20 @@ class _ChatState extends State<Chat> {
         if (snapshot.hasData &&
             snapshot.connectionState == ConnectionState.done) {
           _messages = snapshot.data;
-          for (var element in _messages!) {
-            if (element.sender == "Io") {
-              print("${element.text} ${element.sender}");
-              _sentences += "${element.text}$botStopword";
+          int startChatIndex = 0;
+          if (widget.contact.trained) {
+            _sentences += _messages![1].text;
+            startChatIndex = 2;
+          }
+          for (int i = startChatIndex; i < _messages!.length; i++) {
+            //print("${_messages![i].sender}: ${_messages![i].text}");
+            if (_messages![i].sender == "Io") {
+              _sentences += "${_messages![i].text}$botStopword";
             } else {
-              _sentences += "${element.text}$stopword";
+              _sentences += "${_messages![i].text}$stopword";
             }
           }
-          //print(_sentences);
+          print(_sentences);
           return _body();
         } else {
           return const Center(

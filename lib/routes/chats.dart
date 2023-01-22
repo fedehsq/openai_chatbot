@@ -48,43 +48,6 @@ class _ChatsState extends State<Chats> {
       _messages = data as List<MessageDto>;
     });
   }
-/*
-  FutureBuilder<List<ContactDto>> _getContacts() {
-    return FutureBuilder<List<ContactDto>>(
-      future: ContactDao.getAll(),
-      builder:
-          (BuildContext context, AsyncSnapshot<List<ContactDto>> snapshot) {
-        if (snapshot.hasData &&
-            snapshot.connectionState == ConnectionState.done) {
-          _contacts = snapshot.data;
-          return _contactsList();
-        } else {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-      },
-    );
-  }
-
-  FutureBuilder<List<MessageDto>> _getLastMessages() {
-    return FutureBuilder<List<MessageDto>>(
-      future: MessageDao.getLastMessages(_contacts!),
-      builder:
-          (BuildContext context, AsyncSnapshot<List<MessageDto>> snapshot) {
-        if (snapshot.hasData &&
-            snapshot.connectionState == ConnectionState.done) {
-          _messages = snapshot.data;
-          return _contactsList();
-        } else {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-      },
-    );
-  }
-  */
 
   ListView _contactsList() {
     return ListView.builder(

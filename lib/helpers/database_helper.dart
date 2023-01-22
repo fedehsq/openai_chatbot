@@ -17,7 +17,7 @@ class DbHelper {
       join(await getDatabasesPath(), database),
       onCreate: (db, version) async {
         await db.execute(
-          "CREATE TABLE $contactsTable(id INTEGER PRIMARY KEY, name TEXT, photo TEXT)",
+          "CREATE TABLE $contactsTable(id INTEGER PRIMARY KEY, name TEXT, photo TEXT, trained INTEGER)",
         );
         await db.execute(
           "CREATE TABLE $chatsTable(id INTEGER PRIMARY KEY, contact_id INTEGER, text TEXT, sent INTEGER, FOREIGN KEY(contact_id) REFERENCES contacts(id))",
@@ -27,6 +27,7 @@ class DbHelper {
           {
             "name": "Jane",
             "photo": janeAvatar,
+            "trained": 1,
           },
         );
         // insert the default chat
@@ -49,16 +50,14 @@ class DbHelper {
 
   static List<MessageModel> _defaultChat() {
     final List<MessageModel> messages = [];
-    // Add the sentences to messages
-    final List<String> sentences = training.split("\n");
-    // messages.add(MessageModel(trainingDescription, 1, false));
-    for (int i = 0; i < sentences.length - 1; i++) {
-      if (sentences[i].startsWith("Io:")) {
-        messages
-            .add(MessageModel(sentences[i].replaceFirst("Io:", ""), 1, true));
+    messages.add(MessageModel(modelInfo, 1, false));
+    messages.add(MessageModel(modelDescription, 1, true));
+    List<String> chat = chatExample.split("\n");
+    for (int i = 0; i < chat.length - 1; i++) {
+      if (chat[i].startsWith("Io:")) {
+        messages.add(MessageModel(chat[i].replaceFirst("Io:", ""), 1, true));
       } else {
-        messages.add(
-            MessageModel(sentences[i].replaceFirst("Bot:", ""), 1, false));
+        messages.add(MessageModel(chat[i].replaceFirst("Bot:", ""), 1, false));
       }
     }
     return messages;
