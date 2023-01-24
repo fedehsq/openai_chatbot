@@ -1,11 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:openai_loving_chatbot/dao/contact_dao.dart';
 import 'package:openai_loving_chatbot/dao/message_dao.dart';
 import 'package:openai_loving_chatbot/dto/message_dto.dart';
 import 'package:openai_loving_chatbot/helpers/helper.dart';
 import 'package:openai_loving_chatbot/helpers/jane_avatar.dart';
 import 'package:openai_loving_chatbot/models/contact_model.dart';
+import 'package:openai_loving_chatbot/openai/image_geneation_response.dart';
+import 'package:openai_loving_chatbot/openai/image_generation_api.dart';
 import 'package:openai_loving_chatbot/routes/chat.dart';
 import 'package:openai_loving_chatbot/widgets/chat_body.dart';
 
@@ -131,6 +136,12 @@ class _BotTrainingState extends State<BotTraining> {
                   ModalRoute.withName('/'));
             });
             return Container();
+          } else if (snapshot.hasError) {
+            return Center(
+                child: Text(
+              snapshot.error.toString(),
+              style: const TextStyle(color: Colors.red),
+            ));
           } else {
             return const Center(child: CircularProgressIndicator());
           }
@@ -138,8 +149,24 @@ class _BotTrainingState extends State<BotTraining> {
   }
 
   Future<void> _createBot() async {
-    ContactModel contact = ContactModel(
-        widget.botName, janeAvatar, _messages.isEmpty ? false : true);
+    bool trained = _messages.isNotEmpty;
+    String avatar = janeAvatar;
+    if (trained) {
+      final Response response =
+          await ImageGenerationApi.generateImage(_messages.first.text);
+      if (response.statusCode != 200) {
+        // Get the error message from the response
+        String error = jsonDecode(response.body)["error"]["message"];
+        print(error);
+        print(error);
+        print(error);
+        throw Exception(error);
+      }
+      ImageGenerationResponse imageGenerationResponse =
+          ImageGenerationResponse.fromJson(jsonDecode(response.body));
+      avatar = imageGenerationResponse.data.first.b64Json!;
+    }
+    ContactModel contact = ContactModel(widget.botName, avatar, trained);
     int id = await ContactDao.insert(contact);
     _contact = ContactDto(id, contact.name, contact.photo, contact.trained);
     for (MessageDto message in _messages) {

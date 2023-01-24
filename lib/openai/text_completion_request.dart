@@ -7,7 +7,7 @@ const String modelDescription =
 const String chatExample =
     "Io:Buongiorno Jane\nBot:Buongiorno tesoro \nIo:Come stai?\nBot:Sto bene, ma mi manchi tanto!\nIo:Anche tu!\nBot:Oh, tesoro! Oggi pomeriggio, quando esco dal lavoro, potremmo andare a bere qualcosa?\nIo:Sì!\nBot:Fantastico. Ci vediamo alle sei allora! :)\nIo:Alle sei?\nBot:Sì, alle sei! Non vedo l'ora!\nIo:Perché devi decidere sempre tu l'orario?\nBot:Be', sai che io sono molto organizzata! Voglio semplicemente assicurarmi che sia comodo per entrambi. :)\nIo:Per me non è comodo come orario\nBot:Ah, capisco. Pensi che potremmo andare a bere qualcosa prima?\nIo:no\nBot:Allora potremmo andare a cena?\nIo:";
 
-class OpenAiRequest {
+class TextCompletionRequest {
   final String model;
   final String prompt;
   final int maxTokens;
@@ -17,7 +17,7 @@ class OpenAiRequest {
   final double presencePenalty;
   final List<String> stop;
 
-  OpenAiRequest({
+  TextCompletionRequest({
     required this.prompt,
     this.model = "text-davinci-003",
     this.maxTokens = 128,

@@ -7,12 +7,12 @@ import 'package:openai_loving_chatbot/dto/contact_dto.dart';
 import 'package:openai_loving_chatbot/dto/message_dto.dart';
 import 'package:openai_loving_chatbot/helpers/helper.dart';
 import 'package:openai_loving_chatbot/models/message_model.dart';
-import 'package:openai_loving_chatbot/openai/openai_request.dart';
-import 'package:openai_loving_chatbot/openai/openai_response.dart';
+import 'package:openai_loving_chatbot/openai/text_completion_request.dart';
+import 'package:openai_loving_chatbot/openai/text_completion_response.dart';
 import 'package:openai_loving_chatbot/widgets/chat_app_bar.dart';
 import 'package:openai_loving_chatbot/widgets/chat_body.dart';
 
-import '../openai/completion_api.dart';
+import '../openai/text_completion_api.dart';
 
 class Chat extends StatefulWidget {
   final ContactDto contact;
@@ -53,7 +53,7 @@ class _ChatState extends State<Chat> {
 
   Widget _sendMessage() {
     return FutureBuilder(
-      future: CompletionApi.sendMessage(_sentences),
+      future: TextCompletionApi.sendMessage(_sentences),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         if (snapshot.connectionState == ConnectionState.done &&
             snapshot.hasData) {
@@ -69,8 +69,9 @@ class _ChatState extends State<Chat> {
   }
 
   void _onMessageReceive(Response response) {
-    final OpenAiResponse openaiResponse = OpenAiResponse.fromJson(
-        jsonDecode(const Utf8Decoder().convert(response.body.codeUnits)));
+    final TextCompletionResponse openaiResponse =
+        TextCompletionResponse.fromJson(
+            jsonDecode(const Utf8Decoder().convert(response.body.codeUnits)));
     String message = openaiResponse.choices.first.text.trim();
     _messages!.add(MessageDto(message, "Bot"));
     MessageDao.insert(MessageModel(message, widget.contact.id, false));

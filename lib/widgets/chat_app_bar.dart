@@ -13,9 +13,12 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
       toolbarHeight: 100,
       title: Column(
         children: [
-          CircleAvatar(
-              radius: 32,
-              backgroundImage: MemoryImage(base64Decode(contact.photo))),
+          InkWell(
+            onTap: () => _showContactPhoto(context),
+            child: CircleAvatar(
+                radius: 32,
+                backgroundImage: MemoryImage(base64Decode(contact.photo))),
+          ),
           Padding(
             padding: const EdgeInsets.only(top: 4.0),
             child: Text(
@@ -26,6 +29,16 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
         ],
       ),
     );
+  }
+
+  void _showContactPhoto(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Image.memory(base64Decode(contact.photo)),
+          );
+        });
   }
 
   @override

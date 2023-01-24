@@ -1,4 +1,4 @@
-class OpenAiResponse {
+class TextCompletionResponse {
   final String id;
   final String object;
   final int created;
@@ -6,7 +6,7 @@ class OpenAiResponse {
   final List<Choice> choices;
   final Usage usage;
 
-  OpenAiResponse({
+  TextCompletionResponse({
     required this.id,
     required this.object,
     required this.created,
@@ -15,13 +15,14 @@ class OpenAiResponse {
     required this.usage,
   });
 
-  factory OpenAiResponse.fromJson(Map<String, dynamic> json) {
-    return OpenAiResponse(
+  factory TextCompletionResponse.fromJson(Map<String, dynamic> json) {
+    return TextCompletionResponse(
       id: json['id'],
       object: json['object'],
       created: json['created'],
       model: json['model'],
-      choices: List<Choice>.from(json['choices'].map((x) => Choice.fromJson(x))),
+      choices:
+          List<Choice>.from(json['choices'].map((x) => Choice.fromJson(x))),
       usage: Usage.fromJson(json['usage']),
     );
   }

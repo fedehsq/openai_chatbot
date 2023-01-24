@@ -1,6 +1,6 @@
 import 'package:openai_loving_chatbot/helpers/jane_avatar.dart';
 import 'package:openai_loving_chatbot/models/message_model.dart';
-import 'package:openai_loving_chatbot/openai/openai_request.dart';
+import 'package:openai_loving_chatbot/openai/text_completion_request.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
