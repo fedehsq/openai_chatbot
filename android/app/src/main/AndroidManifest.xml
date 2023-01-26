@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.openai_loving_chatbot">
+    package="com.example.openai_chatbot">
    <application
-        android:label="openai_loving_chatbot"
+        android:label="openai_chatbot"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

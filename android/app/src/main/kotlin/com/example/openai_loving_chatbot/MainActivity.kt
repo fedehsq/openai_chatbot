@@ -1,4 +1,4 @@
-package com.example.openai_loving_chatbot
+package com.example.openai_chatbot
 
 import io.flutter.embedding.android.FlutterActivity
 

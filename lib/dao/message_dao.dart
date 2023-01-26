@@ -1,6 +1,6 @@
-import 'package:openai_loving_chatbot/dto/contact_dto.dart';
-import 'package:openai_loving_chatbot/dto/message_dto.dart';
-import 'package:openai_loving_chatbot/models/message_model.dart';
+import 'package:openai_chatbot/dto/contact_dto.dart';
+import 'package:openai_chatbot/dto/message_dto.dart';
+import 'package:openai_chatbot/models/message_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../helpers/database_helper.dart';

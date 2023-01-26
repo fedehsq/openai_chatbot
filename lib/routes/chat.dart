@@ -2,15 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:openai_loving_chatbot/dao/message_dao.dart';
-import 'package:openai_loving_chatbot/dto/contact_dto.dart';
-import 'package:openai_loving_chatbot/dto/message_dto.dart';
-import 'package:openai_loving_chatbot/helpers/helper.dart';
-import 'package:openai_loving_chatbot/models/message_model.dart';
-import 'package:openai_loving_chatbot/openai/text_completion_request.dart';
-import 'package:openai_loving_chatbot/openai/text_completion_response.dart';
-import 'package:openai_loving_chatbot/widgets/chat_app_bar.dart';
-import 'package:openai_loving_chatbot/widgets/chat_body.dart';
+import 'package:openai_chatbot/dao/message_dao.dart';
+import 'package:openai_chatbot/dto/contact_dto.dart';
+import 'package:openai_chatbot/dto/message_dto.dart';
+import 'package:openai_chatbot/helpers/helper.dart';
+import 'package:openai_chatbot/models/message_model.dart';
+import 'package:openai_chatbot/openai/text_completion_request.dart';
+import 'package:openai_chatbot/openai/text_completion_response.dart';
+import 'package:openai_chatbot/widgets/chat_app_bar.dart';
+import 'package:openai_chatbot/widgets/chat_body.dart';
 
 import '../openai/text_completion_api.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:openai_loving_chatbot/dto/message_dto.dart';
+import 'package:openai_chatbot/dto/message_dto.dart';
 
 class MessageBox extends StatelessWidget {
   final MessageDto message;

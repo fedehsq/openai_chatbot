@@ -1,5 +1,5 @@
-import 'package:openai_loving_chatbot/dto/contact_dto.dart';
-import 'package:openai_loving_chatbot/models/contact_model.dart';
+import 'package:openai_chatbot/dto/contact_dto.dart';
+import 'package:openai_chatbot/models/contact_model.dart';
 
 import '../helpers/database_helper.dart';
 
@@ -39,4 +39,3 @@ class ContactDao {
     return null;
   }
 }
-

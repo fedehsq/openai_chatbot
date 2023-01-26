@@ -50,3 +50,4 @@ Bot: Ah, capisco. Pensi che potremmo andare a bere qualcosa prima?
 Io: no
 Bot: Allora potremmo andare a cena?
 ```
+![Jane](./jane.gif)

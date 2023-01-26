@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:openai_loving_chatbot/dao/contact_dao.dart';
-import 'package:openai_loving_chatbot/dao/message_dao.dart';
-import 'package:openai_loving_chatbot/dto/message_dto.dart';
-import 'package:openai_loving_chatbot/routes/chat.dart';
-import 'package:openai_loving_chatbot/routes/contacts.dart';
+import 'package:openai_chatbot/dao/contact_dao.dart';
+import 'package:openai_chatbot/dao/message_dao.dart';
+import 'package:openai_chatbot/dto/message_dto.dart';
+import 'package:openai_chatbot/routes/chat.dart';
+import 'package:openai_chatbot/routes/contacts.dart';
 
 import '../dto/contact_dto.dart';
 
@@ -64,7 +64,8 @@ class _ChatsState extends State<Chats> {
             title: Text(_contacts![index].name),
             // Empty subtitle id the last message is null
             subtitle: _messages?[index].text != null
-                ? Text(_messages![index].text, maxLines: 3, overflow: TextOverflow.ellipsis)
+                ? Text(_messages![index].text,
+                    maxLines: 3, overflow: TextOverflow.ellipsis)
                 : const Text(''),
             onTap: () async {
               await Navigator.push(

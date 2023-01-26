@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:openai_loving_chatbot/dto/message_dto.dart';
-import 'package:openai_loving_chatbot/widgets/message_box.dart';
+import 'package:openai_chatbot/dto/message_dto.dart';
+import 'package:openai_chatbot/widgets/message_box.dart';
 
 import 'send_text_field.dart';
 

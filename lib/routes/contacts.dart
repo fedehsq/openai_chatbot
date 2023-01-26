@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:openai_loving_chatbot/dao/contact_dao.dart';
-import 'package:openai_loving_chatbot/routes/chat.dart';
-import 'package:openai_loving_chatbot/routes/training.dart';
+import 'package:openai_chatbot/dao/contact_dao.dart';
+import 'package:openai_chatbot/routes/chat.dart';
+import 'package:openai_chatbot/routes/training.dart';
 
 import '../dto/contact_dto.dart';
 

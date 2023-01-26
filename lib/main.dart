@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:openai_loving_chatbot/helpers/database_helper.dart';
-import 'package:openai_loving_chatbot/routes/chats.dart';
+import 'package:openai_chatbot/helpers/database_helper.dart';
+import 'package:openai_chatbot/routes/chats.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

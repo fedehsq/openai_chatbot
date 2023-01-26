@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:openai_loving_chatbot/dto/contact_dto.dart';
+import 'package:openai_chatbot/dto/contact_dto.dart';
 
 class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   final ContactDto contact;

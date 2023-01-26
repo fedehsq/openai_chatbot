@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:openai_loving_chatbot/openai/api_key.dart';
-import 'package:openai_loving_chatbot/openai/text_completion_request.dart';
+import 'package:openai_chatbot/openai/api_key.dart';
+import 'package:openai_chatbot/openai/text_completion_request.dart';
 
 class TextCompletionApi {
   static String completionApiUrl = 'https://api.openai.com/v1/completions';

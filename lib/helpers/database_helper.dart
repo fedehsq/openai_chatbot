@@ -1,6 +1,6 @@
-import 'package:openai_loving_chatbot/helpers/jane_avatar.dart';
-import 'package:openai_loving_chatbot/models/message_model.dart';
-import 'package:openai_loving_chatbot/openai/text_completion_request.dart';
+import 'package:openai_chatbot/helpers/jane_avatar.dart';
+import 'package:openai_chatbot/models/message_model.dart';
+import 'package:openai_chatbot/openai/text_completion_request.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -72,7 +72,8 @@ class DbHelper {
 
   static Future<int> insert(String table, Map<String, Object?> data) async {
     final Database db = await DbHelper._getDb;
-    return await db.insert(table, data, conflictAlgorithm: ConflictAlgorithm.replace);
+    return await db.insert(table, data,
+        conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   static Future<List<Map<String, Object?>>> get(String table,
