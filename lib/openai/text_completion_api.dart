@@ -14,7 +14,6 @@ class TextCompletionApi {
   }
 
   static Future<http.Response> sendMessage(String message) async {
-    print(message);
     return await _post(
         completionApiUrl,
         {
