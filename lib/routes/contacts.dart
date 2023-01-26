@@ -53,12 +53,15 @@ class _ContactsState extends State<Contacts> {
                 backgroundImage:
                     MemoryImage(base64Decode(_contacts![index].photo))),
             title: Text(_contacts![index].name),
-            onTap: () {
-              Navigator.pushReplacement(
+            onTap: () async {
+              await Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => Chat(contact: _contacts![index])),
               );
+              if (mounted) {
+                Navigator.pop(context);
+              }
             },
           ),
         );
@@ -105,21 +108,24 @@ class _ContactsState extends State<Contacts> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Chats'),
+          title: const Text('Select a contact'),
         ),
         body: _body(),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             final String? botName = await _botNameDialog();
             if (botName != null) {
-              WidgetsBinding.instance.addPostFrameCallback((_) async {
-                Navigator.push(
+              if (mounted) {
+                await Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => BotTraining(
                               botName: botName,
                             )));
-              });
+              }
+              if (mounted) {
+                Navigator.pop(context);
+              }
             }
           },
           child: const Icon(Icons.add),

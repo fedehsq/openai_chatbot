@@ -101,7 +101,7 @@ class _ChatsState extends State<Chats> {
               _messages = null;
             });
           },
-          child: const Icon(Icons.add),
+          child: const Icon(Icons.chat),
         ));
   }
 

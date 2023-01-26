@@ -57,6 +57,24 @@ class _BotTrainingState extends State<BotTraining> {
         body: _body());
   }
 
+  Future<void> _showErrorDialog(String error) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Error"),
+            content: Text(error),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("OK"))
+            ],
+          );
+        });
+  }
+
   Future<void> _showInfoDialog() async {
     await showDialog(
         context: context,
@@ -125,23 +143,26 @@ class _BotTrainingState extends State<BotTraining> {
     return FutureBuilder<void>(
         future: _createBot(),
         builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasError) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => Chat(
-                            contact: _contact!,
-                          )),
-                  ModalRoute.withName('/'));
+              _showErrorDialog(snapshot.error.toString());
+            });
+            _sending = false;
+            return _body();
+          } else if (snapshot.connectionState == ConnectionState.done) {
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => Chat(
+                          contact: _contact!,
+                        )),
+              );
+              if (mounted) {
+                Navigator.pop(context);
+              }
             });
             return Container();
-          } else if (snapshot.hasError) {
-            return Center(
-                child: Text(
-              snapshot.error.toString(),
-              style: const TextStyle(color: Colors.red),
-            ));
           } else {
             return const Center(child: CircularProgressIndicator());
           }
@@ -157,9 +178,7 @@ class _BotTrainingState extends State<BotTraining> {
       if (response.statusCode != 200) {
         // Get the error message from the response
         String error = jsonDecode(response.body)["error"]["message"];
-        print(error);
-        print(error);
-        print(error);
+        // Raise futureBuilder error
         throw Exception(error);
       }
       ImageGenerationResponse imageGenerationResponse =

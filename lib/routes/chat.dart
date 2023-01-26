@@ -100,7 +100,11 @@ class _ChatState extends State<Chat> {
               _sentences += "${_messages![i].text}$stopword";
             }
           }
-          print(_sentences);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (_messages!.isNotEmpty) {
+              Helper.scrollDown(_scrollController);
+            }
+          });
           return _body();
         } else {
           return const Center(
