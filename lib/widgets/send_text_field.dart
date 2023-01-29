@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 class SendTextField extends StatelessWidget {
   final void Function() onPressed;
   final TextEditingController editingController;
-  const SendTextField(
-      {super.key, required this.onPressed, required this.editingController});
+  const SendTextField({
+    super.key,
+    required this.onPressed,
+    required this.editingController,
+  });
 
   @override
   Widget build(BuildContext context) {

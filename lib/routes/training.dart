@@ -6,7 +6,6 @@ import 'package:http/http.dart';
 import 'package:openai_chatbot/dao/contact_dao.dart';
 import 'package:openai_chatbot/dao/message_dao.dart';
 import 'package:openai_chatbot/dto/message_dto.dart';
-import 'package:openai_chatbot/helpers/helper.dart';
 import 'package:openai_chatbot/helpers/jane_avatar.dart';
 import 'package:openai_chatbot/models/contact_model.dart';
 import 'package:openai_chatbot/openai/image_geneation_response.dart';
@@ -27,7 +26,6 @@ class BotTraining extends StatefulWidget {
 
 class _BotTrainingState extends State<BotTraining> {
   final TextEditingController _editingController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
   bool _sending = false;
   final List<MessageDto> _messages = [];
   ContactDto? _contact;
@@ -132,7 +130,6 @@ class _BotTrainingState extends State<BotTraining> {
       return _create();
     } else {
       return ChatBody(
-          scrollController: _scrollController,
           messages: _messages,
           editingController: _editingController,
           onPressed: _send);
@@ -174,7 +171,7 @@ class _BotTrainingState extends State<BotTraining> {
     String avatar = janeAvatar;
     if (trained) {
       final Response response =
-          await ImageGenerationApi.generateImage(_messages.first.text);
+          await ImageGenerationApi.generateImage(_messages.last.text);
       if (response.statusCode != 200) {
         // Get the error message from the response
         String error = jsonDecode(response.body)["error"]["message"];
@@ -188,7 +185,7 @@ class _BotTrainingState extends State<BotTraining> {
     ContactModel contact = ContactModel(widget.botName, avatar, trained);
     int id = await ContactDao.insert(contact);
     _contact = ContactDto(id, contact.name, contact.photo, contact.trained);
-    for (MessageDto message in _messages) {
+    for (MessageDto message in _messages.reversed) {
       MessageModel messageModel =
           MessageModel(message.text, id, message.sender == "Io" ? true : false);
       await MessageDao.insert(messageModel);
@@ -199,15 +196,12 @@ class _BotTrainingState extends State<BotTraining> {
     if (_editingController.text.isNotEmpty) {
       setState(() {
         if (_messages.length % 2 != 0 || _messages.isEmpty) {
-          _messages.add(MessageDto(_editingController.text, "Io"));
+          _messages.insert(0, MessageDto(_editingController.text, "Io"));
         } else {
-          _messages.add(MessageDto(_editingController.text, "Bot"));
+          _messages.insert(0, MessageDto(_editingController.text, "Bot"));
         }
         _editingController.clear();
-        Helper.scrollDown(_scrollController);
       });
     }
   }
 }
-/*
-Thor è il Dio del fulmini; è consapevole di essere quasi imbattibile e per questo è arrogante.*/

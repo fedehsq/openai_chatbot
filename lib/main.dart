@@ -5,11 +5,11 @@ import 'package:openai_chatbot/routes/chats.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await DbHelper.init();
-  runApp(const MyApp());
+  runApp(const Chatbot());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class Chatbot extends StatelessWidget {
+  const Chatbot({super.key});
 
   @override
   Widget build(BuildContext context) {

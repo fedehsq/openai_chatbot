@@ -5,7 +5,6 @@ import 'package:http/http.dart';
 import 'package:openai_chatbot/dao/message_dao.dart';
 import 'package:openai_chatbot/dto/contact_dto.dart';
 import 'package:openai_chatbot/dto/message_dto.dart';
-import 'package:openai_chatbot/helpers/helper.dart';
 import 'package:openai_chatbot/models/message_model.dart';
 import 'package:openai_chatbot/openai/text_completion_request.dart';
 import 'package:openai_chatbot/openai/text_completion_response.dart';
@@ -24,7 +23,6 @@ class Chat extends StatefulWidget {
 
 class _ChatState extends State<Chat> {
   final TextEditingController _editingController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
   String _sentences = "";
   bool _sending = false;
   List<MessageDto>? _messages;
@@ -44,7 +42,6 @@ class _ChatState extends State<Chat> {
       return _sendMessage();
     } else {
       return ChatBody(
-          scrollController: _scrollController,
           messages: _messages!,
           editingController: _editingController,
           onPressed: _send);
@@ -60,7 +57,6 @@ class _ChatState extends State<Chat> {
           _onMessageReceive(snapshot.data);
         }
         return ChatBody(
-            scrollController: _scrollController,
             messages: _messages!,
             editingController: _editingController,
             onPressed: _send);
@@ -73,11 +69,11 @@ class _ChatState extends State<Chat> {
         TextCompletionResponse.fromJson(
             jsonDecode(const Utf8Decoder().convert(response.body.codeUnits)));
     String message = openaiResponse.choices.first.text.trim();
-    _messages!.add(MessageDto(message, "Bot"));
+    _messages!.insert(0, MessageDto(message, "Bot"));
     MessageDao.insert(MessageModel(message, widget.contact.id, false));
     _sending = false;
     _sentences += "${openaiResponse.choices.first.text}$stopword";
-    Helper.scrollDown(_scrollController);
+    // Helper.scrollDown(_scrollController);
   }
 
   Widget _getMessages() {
@@ -100,11 +96,12 @@ class _ChatState extends State<Chat> {
               _sentences += "${_messages![i].text}$stopword";
             }
           }
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (_messages!.isNotEmpty) {
-              Helper.scrollDown(_scrollController);
-            }
-          });
+          // WidgetsBinding.instance.addPostFrameCallback((_) {
+          //   if (_messages!.isNotEmpty) {
+          //     Helper.scrollDown(_scrollController);
+          //   }
+          // });
+          _messages = snapshot.data?.reversed.toList();
           return _body();
         } else {
           return const Center(
@@ -121,11 +118,11 @@ class _ChatState extends State<Chat> {
           MessageModel(_editingController.text, widget.contact.id, true);
       MessageDao.insert(messageModel);
       setState(() {
-        _messages!.add(MessageDto(_editingController.text, "Io"));
+        _messages!.insert(0, MessageDto(_editingController.text, "Io"));
         _sending = true;
         _sentences += "${_editingController.text}$botStopword";
         _editingController.clear();
-        Helper.scrollDown(_scrollController);
+        // Helper.scrollDown(_scrollController);
       });
     }
   }
