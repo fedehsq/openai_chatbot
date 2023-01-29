@@ -27,7 +27,7 @@ class ChatBody extends StatelessWidget {
             reverse: true,
             itemCount: messages.length,
             itemBuilder: (BuildContext context, int index) {
-              return MessageBox(message: messages[index]);
+              return MessageBox(message: messages[messages.length - 1 - index]);
             },
           ),
         ),

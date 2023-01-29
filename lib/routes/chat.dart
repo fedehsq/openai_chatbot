@@ -69,7 +69,7 @@ class _ChatState extends State<Chat> {
         TextCompletionResponse.fromJson(
             jsonDecode(const Utf8Decoder().convert(response.body.codeUnits)));
     String message = openaiResponse.choices.first.text.trim();
-    _messages!.insert(0, MessageDto(message, "Bot"));
+    _messages!.add(MessageDto(message, "Bot"));
     MessageDao.insert(MessageModel(message, widget.contact.id, false));
     _sending = false;
     _sentences += "${openaiResponse.choices.first.text}$stopword";
@@ -101,7 +101,7 @@ class _ChatState extends State<Chat> {
           //     Helper.scrollDown(_scrollController);
           //   }
           // });
-          _messages = snapshot.data?.reversed.toList();
+          // _messages = snapshot.data?.reversed.toList();
           return _body();
         } else {
           return const Center(
@@ -118,7 +118,7 @@ class _ChatState extends State<Chat> {
           MessageModel(_editingController.text, widget.contact.id, true);
       MessageDao.insert(messageModel);
       setState(() {
-        _messages!.insert(0, MessageDto(_editingController.text, "Io"));
+        _messages!.add(MessageDto(_editingController.text, "Io"));
         _sending = true;
         _sentences += "${_editingController.text}$botStopword";
         _editingController.clear();

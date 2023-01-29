@@ -171,7 +171,7 @@ class _BotTrainingState extends State<BotTraining> {
     String avatar = janeAvatar;
     if (trained) {
       final Response response =
-          await ImageGenerationApi.generateImage(_messages.last.text);
+          await ImageGenerationApi.generateImage(_messages.first.text);
       if (response.statusCode != 200) {
         // Get the error message from the response
         String error = jsonDecode(response.body)["error"]["message"];
@@ -185,7 +185,7 @@ class _BotTrainingState extends State<BotTraining> {
     ContactModel contact = ContactModel(widget.botName, avatar, trained);
     int id = await ContactDao.insert(contact);
     _contact = ContactDto(id, contact.name, contact.photo, contact.trained);
-    for (MessageDto message in _messages.reversed) {
+    for (MessageDto message in _messages) {
       MessageModel messageModel =
           MessageModel(message.text, id, message.sender == "Io" ? true : false);
       await MessageDao.insert(messageModel);
@@ -196,9 +196,9 @@ class _BotTrainingState extends State<BotTraining> {
     if (_editingController.text.isNotEmpty) {
       setState(() {
         if (_messages.length % 2 != 0 || _messages.isEmpty) {
-          _messages.insert(0, MessageDto(_editingController.text, "Io"));
+          _messages.add(MessageDto(_editingController.text, "Io"));
         } else {
-          _messages.insert(0, MessageDto(_editingController.text, "Bot"));
+          _messages.add(MessageDto(_editingController.text, "Bot"));
         }
         _editingController.clear();
       });
